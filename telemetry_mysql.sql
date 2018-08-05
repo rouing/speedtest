@@ -1,12 +1,3 @@
--- phpMyAdmin SQL Dump
--- version 4.7.0
--- https://www.phpmyadmin.net/
---
--- Host: 127.0.0.1
--- Generation Time: Aug 24, 2017 at 02:16 PM
--- Server version: 10.1.25-MariaDB
--- PHP Version: 7.1.7
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
 START TRANSACTION;
@@ -32,6 +23,7 @@ CREATE TABLE `speedtest_users` (
   `id` int(11) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ip` text NOT NULL,
+  `ispinfo` text,
   `ua` text NOT NULL,
   `lang` text NOT NULL,
   `dl` text,

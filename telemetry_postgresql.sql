@@ -42,6 +42,7 @@ CREATE TABLE speedtest_users (
     id integer NOT NULL,
     "timestamp" timestamp without time zone DEFAULT now() NOT NULL,
     ip text NOT NULL,
+	ispinfo text,
     ua text NOT NULL,
     lang text NOT NULL,
     dl text,

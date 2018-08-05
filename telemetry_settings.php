@@ -1,6 +1,6 @@
 <?php
 
-$db_type="mysql"; //Type of db: "mysql", "sqlite" or "postgresql" or "csv"
+$db_type="mysql"; //Type of db: "mysql", "sqlite", "postgresql" or "csv"
 
 // Sqlite3 settings
 $Sqlite_db_file = "../telemetry.sql";

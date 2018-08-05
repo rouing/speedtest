@@ -442,7 +442,7 @@ function pingTest (done) {
         if (i < settings.count_ping) doPing(); else done() // more pings to do?
       }
     }.bind(this)
-    // sent xhr
+    // send xhr
     xhr[0].open('GET', settings.url_ping + url_sep(settings.url_ping) + 'r=' + Math.random(), true) // random string to prevent caching
     xhr[0].send()
   }.bind(this)
@@ -457,14 +457,15 @@ function sendTelemetry(){
   xhr.open('POST', settings.url_telemetry+url_sep(settings.url_telemetry)+"r="+Math.random(), true);
   try{
     var fd = new FormData()
-    fd.append('dl', dlStatus)
+    fd.append('ispinfo', clientIp) //clientIp also contains ISP info
+	fd.append('dl', dlStatus)
     fd.append('ul', ulStatus)
     fd.append('ping', pingStatus)
     fd.append('jitter', jitterStatus)
     fd.append('log', settings.telemetry_level>1?log:"")
     xhr.send(fd)
   }catch(ex){
-    var postData = 'dl='+encodeURIComponent(dlStatus)+'&ul='+encodeURIComponent(ulStatus)+'&ping='+encodeURIComponent(pingStatus)+'&jitter='+encodeURIComponent(jitterStatus)+'&log='+encodeURIComponent(settings.telemetry_level>1?log:'')
+    var postData = 'ispinfo='+encodeURIComponent(clientIp)+'dl='+encodeURIComponent(dlStatus)+'&ul='+encodeURIComponent(ulStatus)+'&ping='+encodeURIComponent(pingStatus)+'&jitter='+encodeURIComponent(jitterStatus)+'&log='+encodeURIComponent(settings.telemetry_level>1?log:'')
     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
     xhr.send(postData)
   }

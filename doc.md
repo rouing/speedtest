@@ -330,7 +330,7 @@ If you see a table called `speedtest_users`, empty, you did it right.
 
 ### Configuring `telemetry.php`
 Open telemetry_settings.php with notepad or a similar text editor.
-Set your preferred database, ``$db_type="mysql";``, ``$db_type="sqlite";``, ``$db_type="postgresql";`` or or ``$db_type="csv";``
+Set your preferred database, ``$db_type="mysql";``, ``$db_type="sqlite";``, ``$db_type="postgresql";`` or ``$db_type="csv";``
 If you choose to use Sqlite3, you must set the path to your database file:
 ```php
 $Sqlite_db_file = "../telemetry.sql";
@@ -363,7 +363,7 @@ __Note__: CSV currently only supports basic telemetry, the log will not be saved
 Edit your test page; where you start the worker, you need to specify the `telemetry_level`.  
 There are 3 levels:
 * `none`: telemetry is disabled (default)
-* `basic`: telemetry collects IP, User Agent, Preferred language, Test results
+* `basic`: telemetry collects IP, ISP info, User Agent, Preferred language, Test results
 * `full`: same as above, but also collects a log (10-150 Kb each, not recommended)
 
 Example:
