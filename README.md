@@ -19,6 +19,9 @@ Only modern browsers are supported (IE11, latest Edge, latest Chrome, latest Fir
 * Telemetry (optional)
 * Results sharing (optional)
 
+![Screenshot](https://speedtest.fdossena.com/screenshot.png)
+
+
 ## Requirements
  - A reasonably fast web server with PHP (see doc.md for details and use without PHP)
  - Your server must accept large POST requests (up to 20 Megabytes), otherwise the upload test will fail
