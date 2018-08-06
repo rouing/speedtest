@@ -161,7 +161,7 @@ format:
 * __dlProgress__: the progress of the download test as a number between 0 and 1
 * __ulProgress__: the progress of the upload test as a number between 0 and 1
 * __pingProgress__: the progress of the ping+jitter test as a number between 0 and 1
-* __testId__: when telemetry is active, this is the ID of the test as an integer. This string is empty until the test is finished (testState 4). This ID is used for results sharing
+* __testId__: when telemetry is active, this is the ID of the test as an integer. This string is 'noID' until the test is finished (testState 4). This ID is used for results sharing
 
 Note: clientIp appears before jitterStatus. This is not a mistake, it's to keep the js file compatible with older pages from before the jitter test was introduced.
 
