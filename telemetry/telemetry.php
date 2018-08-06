@@ -15,8 +15,9 @@ if($db_type=="mysql"){
     $conn = new mysqli($MySql_hostname, $MySql_username, $MySql_password, $MySql_databasename) or die("1");
     $stmt = $conn->prepare("INSERT INTO speedtest_users (ip,ispinfo,ua,lang,dl,ul,ping,jitter,log) VALUES (?,?,?,?,?,?,?,?,?)") or die("2");
     $stmt->bind_param("sssssssss",$ip,$ispinfo,$ua,$lang,$dl,$ul,$ping,$jitter,$log) or die("3");
-    $stmt->execute() or die("4");
+	$stmt->execute() or die("4");
     $stmt->close() or die("5");
+	echo "id ".$conn->insert_id;
     $conn->close() or die("6");
 
 }elseif($db_type=="sqlite"){
@@ -38,6 +39,7 @@ if($db_type=="mysql"){
     ");
     $stmt = $conn->prepare("INSERT INTO speedtest_users (ip,ispinfo,ua,lang,dl,ul,ping,jitter,log) VALUES (?,?,?,?,?,?,?,?,?)") or die("2");
     $stmt->execute(array($ip,$ispinfo,$ua,$lang,$dl,$ul,$ping,$jitter,$log)) or die("3");
+	echo "id ".$conn->lastInsertId();
     $conn = null;
 }elseif($db_type=="postgresql"){
     // Prepare connection parameters for db connection
@@ -49,6 +51,7 @@ if($db_type=="mysql"){
     $conn = new PDO("pgsql:$conn_host;$conn_db;$conn_user;$conn_password") or die("1");
     $stmt = $conn->prepare("INSERT INTO speedtest_users (ip,ispinfo,ua,lang,dl,ul,ping,jitter,log) VALUES (?,?,?,?,?,?,?,?,?)") or die("2");
     $stmt->execute(array($ip,$ispinfo,$ua,$lang,$dl,$ul,$ping,$jitter,$log)) or die("3");
+	echo "id ".$conn->lastInsertId();
     $conn = null;
 }
 elseif($db_type=="csv"){

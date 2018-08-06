@@ -17,6 +17,7 @@ Only modern browsers are supported (IE11, latest Edge, latest Chrome, latest Fir
 * Jitter
 * IP Address
 * Telemetry (optional)
+* Results sharing (optional)
 
 ## Requirements
  - A reasonably fast web server with PHP (see doc.md for details and use without PHP)

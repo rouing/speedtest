@@ -1,7 +1,7 @@
 # HTML5 Speedtest
 
 > by Federico Dossena  
-> Version 4.5.5, April 25, 2018
+> Version 4.6, August 7, 2018
 > [https://github.com/adolfintel/speedtest/](https://github.com/adolfintel/speedtest/)
 
 
@@ -19,8 +19,8 @@ First of all, the requirements to run this test:
     * Apple Safari 7.1+
     * Opera 18+
 * Client side, the test can use up to 500 megabytes of RAM
-* Server side, you'll need a fast connection (at least 100 Mbps recommended), and the web server must accept large POST requests (up to 20 megabytes).
-  Apache2 and PHP are recommended, but not mandatory.
+* Server side, you'll need a fast connection (at least 100 Mbps recommended), and the web server must accept large POST requests (up to 20 megabytes).  
+  The recommended setup is: GNU/Linux, Apache2, PHP, MySQL database (if you want to use telemetry).
 
 If this looks good, let's proceed and see how to use the test.
 
@@ -37,7 +37,7 @@ To install the test on your server, upload the following files:
 * `empty.php`
 * one of the examples
 
-Later we'll see how to use the test without PHP, and how to configure the telemetry if you want to use it.
+Later we'll see how to use the test without PHP, and how to configure the telemetry and result sharing if you want to use that.
 
 __Important:__ keep all the files together; all paths are relative to the js file
 
@@ -51,7 +51,10 @@ Start by copying one of the included examples. Here's a description for each of 
 * `example-customSettings2.html`: A modified version of `example-pretty.html` showing how to make a custom test with only download and upload
 * `example-gauges.html`: The most sophisticated example, with the same functions as `example-pretty.html` but also gauges and progress indicators for each test. This is the nicest example included, and also a good starting point, but drawing the gauges may slow down the test on slow devices like a Raspberry Pi
 * `example-chart.html`: The old example5.html, showing how to use the test with the Chart.js library
+
+These 2 examples require some additional server configuration, discussed in the Telemetry section:
 * `example-telemetry.html`: A modified version of `example-pretty.html` with basic telemetry turned on. See the section on Telemetry for details
+* `example-telemetry-resultsSharing.html`: A modified version of `example-telemetry.html` with results sharing. This is the most complete and most complex example, showing off all of the speedtest features
 
 ### Customizing your example
 The included examples are good starting places if you want to have a simple speedtest on your site.  
@@ -114,6 +117,7 @@ w.onmessage = function (event) {
   var dlProgress = data[6]
   var ulProgress = data[7]
   var pingProgress = data[8]
+  var testId = data[9]
   if (testState >= 4) {
     clearInterval(timer) // test is finished or aborted
   }
@@ -157,6 +161,7 @@ format:
 * __dlProgress__: the progress of the download test as a number between 0 and 1
 * __ulProgress__: the progress of the upload test as a number between 0 and 1
 * __pingProgress__: the progress of the ping+jitter test as a number between 0 and 1
+* __testId__: when telemetry is active, this is the ID of the test as an integer. This string is empty until the test is finished (testState 4). This ID is used for results sharing
 
 Note: clientIp appears before jitterStatus. This is not a mistake, it's to keep the js file compatible with older pages from before the jitter test was introduced.
 
@@ -303,11 +308,12 @@ It is important here to turn off compression, and generate incompressible data.
 A symlink to `/dev/urandom` is also ok.
 
 #### Replacement for `empty.php`
-Your replacement must simply respond with a HTTP code 200 and send nothing else. You may want to send additional headers to disable caching. The test assumes that Connection:keep-alive is sent by the server.
+Your replacement must simply respond with a HTTP code 200 and send nothing else. You may want to send additional headers to disable caching. The test assumes that Connection:keep-alive is sent by the server.  
+An empty file can be used for this.
 
 #### Replacement for `getIP.php`
-Your replacement must simply respond with the client's IP as plaintext. Nothing fancy.  
-If you want, you can also accept the `isp=true` parameter and also include the ISP info.
+Your replacement can simply respond with the client's IP as plaintext or do something more fancy.
+If you want, you can also accept the `isp=true` parameter and also include the ISP info. In this case, return a JSON string containing a string called `processedString` with the text that you want to be displayed in the IP address field, and an object called `rawIspInfo` containing whatever you want (will be included in telemetry if enabled).
 
 #### JS
 You need to start the test with your replacements like this:
@@ -318,18 +324,18 @@ w.postMessage('start {"url_dl": "newGarbageURL", "url_ul": "newEmptyURL", "url_p
 ## Telemetry
 Telemetry currently requires PHP and either MySQL, PostgreSQL or SQLite. Alternatively, it is possible to save to a CSV file.
 To set up the telemetry, we need to do 4 things:
-* copy `telemetry.php` and `telemetry_settings.php`
+* copy the `telemetry` folder
 * edit `telemetry_settings.php` to add your database or CSV settings
 * create the database
 * enable telemetry
 
 ### Creating the database
 This step is only for MySQL and PostgreSQL.  
-Log into your database using phpMyAdmin or a similar software and import the appropriate sql file into an empty database. For MySQL databases use `telemetry_mysql.sql` and for PostgreSQL databases use `telemetry_postgesql.sql`.
+Log into your database using phpMyAdmin or a similar software and import the appropriate sql file into an empty database. For MySQL databases use `telemetry_mysql.sql` and for PostgreSQL databases use `telemetry_postgesql.sql`. They're inside the `telemetry` folder. You can delete the files afterwards.
 If you see a table called `speedtest_users`, empty, you did it right.
 
 ### Configuring `telemetry.php`
-Open telemetry_settings.php with notepad or a similar text editor.
+Open `telemetry_settings.php` with notepad or a similar text editor.
 Set your preferred database, ``$db_type="mysql";``, ``$db_type="sqlite";``, ``$db_type="postgresql";`` or ``$db_type="csv";``
 If you choose to use Sqlite3, you must set the path to your database file:
 ```php
@@ -340,7 +346,7 @@ If you choose to use MySQL, you must also add your database credentials:
 ```php
 $MySql_username="USERNAME"; //your database username
 $MySql_password="PASSWORD"; //your database password
-$MySql_hostname="DB_HOSTNAME"; //database address, usually localhost\
+$MySql_hostname="DB_HOSTNAME"; //database address, usually localhost
 $MySql_databasename="DB_NAME"; //the name of the database where you loaded telemetry_mysql.sql
 ```
 
@@ -373,8 +379,23 @@ w.postMessage('start {"telemetry_level":"basic"}')
 
 Also, see example-telemetry.html
 
+### Results sharing
+This feature generates an image that can be share by the user containing the download, upload, ping, jitter and ISP (if enabled).
+
+To use this feature, copy the `results` folder. You can customize the style of the generated image by editing the settings in `results/index.php`.
+
+This feature requires Telemetry to be enabled, and FreeType2 must be installed in PHP (if not already be installed by your distro).
+
+__Note:__ CSV doesn't currently support this.
+
+__Important:__ This feature relies on PHP functions `imagefttext` and `imageftbbox` that are well known for being problematic. The most common problem is that they can't find the font files and therefore nothing is drawn. This problem is metioned [here](http://php.net/manual/en/function.imagefttext.php) and was experienced by a lot of users.
+
 ### Seeing the results
-At the moment there is no front-end to see the telemetry data; you can connect to the database and see the collected results in the `speedtest_users` table.
+A basic front-end for visualizing and searching tests by ID is available in `telemetry/stats.php`.
+
+A login is required to access the interface. __Important__: change the default password in `telemetry_settings.php`.
+
+__Note:__ CSV doesn't currently support this.
 
 ## Troubleshooting
 These are the most common issues reported by users, and how to fix them. If you still need help, contact me at [info@fdossena.com](mailto:info@fdossena.com).
@@ -399,6 +420,10 @@ Make sure your server is sending the ```Connection:keep-alive``` header
 #### The server is behind a load balancer, proxy, etc. and I get the wrong IP address
 Edit getIP.php and replace lines 5-13 with what is more appropriate in your scenario.  
 Example: ```$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];```
+
+#### The results sharing just generates a blank image
+If the image doesn't display and the browser displays a broken image icon, FreeType2 is not installed or configured properly.  
+If the image is blank, this usually happens because PHP can't find the font files inside the `results` folder. You can fix your PHP config or edit `results/index.php` and use absolute paths for the fonts. This is a [known issue with PHP](http://php.net/manual/en/function.imagefttext.php) and no real solution is known.
 
 ## Known bugs and limitations
 ### General

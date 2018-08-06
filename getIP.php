@@ -1,7 +1,11 @@
 <?php
-
+/*
+	This script detects the client's IP address and fetches ISP info from ipinfo.io/
+	Output from this script is a JSON string composed of 2 objects: a string called processedString which contains the combined IP, ISP, Contry and distance as it can be presented to the user; and an object called rawIspInfo which contains the raw data from ipinfo.io (will be empty if isp detection is disabled).
+	Client side, the output of this script can be treated as JSON or as regular text. If the output is regular text, it will be shown to the user as is.
+*/
 $ip = "";
-header('Content-Type: text/plain; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
     $ip = $_SERVER['HTTP_CLIENT_IP'];
 } elseif (!empty($_SERVER['X-Real-IP'])) {
@@ -15,11 +19,11 @@ if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
 $ip = preg_replace("/^::ffff:/", "", $ip);
 
 if (strpos($ip, '::1') !== false) {
-    echo $ip . " - localhost ipv6 access";
+    echo json_encode(['processedString' => $ip . " - localhost ipv6 access", 'rawIspInfo' => ""]);
     die();
 }
 if (strpos($ip, '127.0.0') !== false) {
-    echo $ip . " - localhost ipv4 access";
+    echo json_encode(['processedString' => $ip . " - localhost ipv4 access", 'rawIspInfo' => ""]);
     die();
 }
 
@@ -42,9 +46,11 @@ function distance($latitudeFrom, $longitudeFrom, $latitudeTo, $longitudeTo) {
 
 if (isset($_GET["isp"])) {
     $isp = "";
+	$rawIspInfo=null;
     try {
         $json = file_get_contents("https://ipinfo.io/" . $ip . "/json");
         $details = json_decode($json, true);
+		$rawIspInfo=$details;
         if (array_key_exists("org", $details))
             $isp .= $details["org"];
         else
@@ -87,8 +93,8 @@ if (isset($_GET["isp"])) {
     } catch (Exception $ex) {
         $isp = "Unknown ISP";
     }
-    echo $ip . " - " . $isp;
+    echo json_encode(['processedString' => $ip . " - " . $isp, 'rawIspInfo' => $rawIspInfo]);
 } else {
-    echo $ip;
+    echo json_encode(['processedString' => $ip, 'rawIspInfo' => ""]);
 }
 ?>
