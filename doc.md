@@ -209,6 +209,10 @@ w.postMessage('start '+JSON.stringify(params))
 * __url_getIp__: path to getIP.php or replacement
     * Default: `getIP.php`
     * __Important:__ path is relative to js file
+* __url_telemetry__: path to telemetry.php or replacement
+    * Default: `telemetry/telemetry.php`
+    * __Important:__ path is relative to js file
+	* __Note:__ you can ignore this parameter if you're not using the telemetry
 
 #### Advanced test parameters
 * __test_order__: the order in which tests will be performed. Each character represents an operation:
@@ -274,7 +278,8 @@ w.postMessage('start '+JSON.stringify(params))
     * `1514 / 1460`: TCP+IPv4+ETH, ignoring HTTP overhead
     * `1514 / 1440`: TCP+IPv6+ETH, ignoring HTTP overhead
     * `1`: ignore overheads. This measures the speed at which you actually download and upload files rather than the raw connection speed
-
+* __telemetry_extra__: Extra data that you want to be passed to the telemetry. This is a string field, if you want to pass an object, make sure you use ``JSON.stringify``.
+	
 ### Aborting the test prematurely
 The test can be aborted at any time by sending an abort command to the worker:
 

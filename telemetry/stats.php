@@ -88,26 +88,26 @@ if($stats_password=="PASSWORD"){
 		if($_GET["op"]=="id"&&!empty($_POST["id"])){
 			$id=$_POST["id"];
 			if($db_type=="mysql"){
-				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log from speedtest_users where id=?");
+				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log,extra from speedtest_users where id=?");
 				$q->bind_param("i",$_POST["id"]);
 				$q->execute();
-				$q->bind_result($id,$timestamp,$ip,$ispinfo,$ua,$lang,$dl,$ul,$ping,$jitter,$log);
+				$q->bind_result($id,$timestamp,$ip,$ispinfo,$ua,$lang,$dl,$ul,$ping,$jitter,$log,$extra);
 			} else if($db_type=="sqlite"||$db_type=="postgresql"){
-				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log from speedtest_users where id=?");
+				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log,extra from speedtest_users where id=?");
 				$q->execute(array($id));
 			} else die();
 		}else{
 			if($db_type=="mysql"){
-				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log from speedtest_users order by timestamp desc limit 0,100");
+				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log,extra from speedtest_users order by timestamp desc limit 0,100");
 				$q->execute();
-				$q->bind_result($id,$timestamp,$ip,$ispinfo,$ua,$lang,$dl,$ul,$ping,$jitter,$log);
+				$q->bind_result($id,$timestamp,$ip,$ispinfo,$ua,$lang,$dl,$ul,$ping,$jitter,$log,$extra);
 			} else if($db_type=="sqlite"||$db_type=="postgresql"){
-				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log from speedtest_users order by timestamp desc limit 0,100");
+				$q=$conn->prepare("select id,timestamp,ip,ispinfo,ua,lang,dl,ul,ping,jitter,log,extra from speedtest_users order by timestamp desc limit 0,100");
 				$q->execute();
 			}else die();
 		}
 		while(true){
-			$id=null; $timestamp=null; $ip=null; $ispinfo=null; $ua=null; $lang=null; $dl=null; $ul=null; $ping=null; $jitter=null; $log=null;
+			$id=null; $timestamp=null; $ip=null; $ispinfo=null; $ua=null; $lang=null; $dl=null; $ul=null; $ping=null; $jitter=null; $log=null; $extra=null;
 			if($db_type=="mysql"){
 				if(!$q->fetch()) break;
 			} else if($db_type=="sqlite"||$db_type=="postgresql"){
@@ -123,6 +123,7 @@ if($stats_password=="PASSWORD"){
 				$ping=$row["ping"];
 				$jitter=$row["jitter"];
 				$log=$row["log"];
+				$extra=$row["extra"];
 			}else die();
 	?>
 		<table>
@@ -135,6 +136,7 @@ if($stats_password=="PASSWORD"){
 			<tr><th>Ping</th><td><?=htmlspecialchars($ping, ENT_HTML5, 'UTF-8') ?></td></tr>
 			<tr><th>Jitter</th><td><?=htmlspecialchars($jitter, ENT_HTML5, 'UTF-8') ?></td></tr>
 			<tr><th>Log</th><td><?=htmlspecialchars($log, ENT_HTML5, 'UTF-8') ?></td></tr>
+			<tr><th>Extra info</th><td><?=htmlspecialchars($extra, ENT_HTML5, 'UTF-8') ?></td></tr>
 		</table>
 	<?php
 		}
