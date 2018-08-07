@@ -15,8 +15,8 @@ header('Content-Type: text/html; charset=utf-8');
 		width:100%; min-height:100%;
 	}
 	html{
-		background-color:#304090;
-		font-family:Sans-Serif;
+		background-color: hsl(198,72%,35%);
+		font-family: "Segoe UI","Roboto",sans-serif;
 	}
 	body{
 		background-color:#FFFFFF;
@@ -24,12 +24,29 @@ header('Content-Type: text/html; charset=utf-8');
 		width:100%;
 		max-width:70em;
 		margin:4em auto;
-		box-shadow:0 0 20em #00000040;
+		box-shadow:0 1em 6em #00000080;
 		padding:1em 1em 4em 1em;
 		border-radius:0.4em;
 	}
+	h1,h2,h3,h4,h5,h6{
+		font-weight:300;
+		margin-bottom: 0.1em;
+	}
+	h1{
+		text-align:center;
+	}
 	table{
-		margin:4em 0;
+		margin:2em 0;
+		width:100%;
+	}
+	table, tr, th, td {
+		border: 1px solid #AAAAAA;
+	}
+	th {
+		width: 6em;
+	}
+	td {
+		word-break: break-all;
 	}
 </style>
 </head>
