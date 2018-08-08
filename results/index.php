@@ -1,21 +1,31 @@
 <?php
 error_reporting(0);
 putenv('GDFONTPATH=' . realpath('.'));
+function tryFont($name){
+	$rp=realpath('.');
+	if(imageftbbox(12,0,$name,"M")[5]==0){
+		$name=$rp."/".$name.".ttf";
+		if(imageftbbox(12,0,$name,"M")[5]==0){
+			return null;
+		}
+	}
+	return $name;
+}
 
 $SCALE=1.25;
 $WIDTH=530*$SCALE;
 $HEIGHT=150*$SCALE;
 $im=imagecreatetruecolor($WIDTH,$HEIGHT);
 $BACKGROUND_COLOR=imagecolorallocate($im,248,248,248);
-$FONT_1="OpenSans-Semibold";
+$FONT_1=tryFont("OpenSans-Semibold");
 $FONT_1_SIZE=16*$SCALE;
-$FONT_2="OpenSans-Light";
+$FONT_2=tryFont("OpenSans-Light");
 $FONT_2_SIZE=24*$SCALE;
-$FONT_3="OpenSans-Semibold";
+$FONT_3=tryFont("OpenSans-Semibold");
 $FONT_3_SIZE=14*$SCALE;
-$FONT_4="OpenSans-Semibold";
+$FONT_4=tryFont("OpenSans-Semibold");
 $FONT_4_SIZE=10*$SCALE;
-$FONT_WATERMARK="OpenSans-Light";
+$FONT_WATERMARK=tryFont("OpenSans-Light");
 $FONT_WATERMARK_SIZE=8*$SCALE;
 $TEXT_COLOR_1=imagecolorallocate($im,40,40,40);
 $TEXT_COLOR_2=imagecolorallocate($im,96,96,96);
