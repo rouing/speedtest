@@ -201,7 +201,7 @@
             var interval = setInterval(function () { w.postMessage('status') }, 100)
             w.onmessage = function (event) {
                 var data = JSON.parse(event.data)
-                var status = data.testStatus
+                var status = data.testState
                 if (status >= 4) {
                     clearInterval(interval)
                     document.getElementById('abortBtn').style.display = 'none'

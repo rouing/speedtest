@@ -181,7 +181,7 @@ function startStop(){
 		I("shareArea").style.display="none";
 		w.onmessage=function(e){
 			data=JSON.parse(e.data);
-			var status=data.testStatus;
+			var status=data.testState;
 			if(status>=4){
 				//test completed
 				I("startStopBtn").className="";
@@ -207,7 +207,7 @@ function startStop(){
 //this function reads the data sent back by the worker and updates the UI
 function updateUI(forced){
 	if(!forced&&(!data||!w)) return;
-	var status=data.testStatus;
+	var status=data.testState;
 	I("ip").textContent=data.clientIp;
 	I("dlText").textContent=(status==1&&data.dlStatus==0)?"...":data.dlStatus;
 	drawMeter(I("dlMeter"),mbpsToAmount(Number(data.dlStatus*(status==1?oscillate():1))),meterBk,dlColor,Number(data.dlProgress),progColor);

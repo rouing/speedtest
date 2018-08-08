@@ -72,7 +72,7 @@ this.addEventListener('message', function (e) {
   var params = e.data.split(' ')
   if (params[0] === 'status') { // return status
     postMessage(JSON.stringify({
-		testStatus:testStatus,
+		testState:testStatus,
 		dlStatus:dlStatus,
 		ulStatus:ulStatus,
 		pingStatus:pingStatus,

@@ -126,7 +126,7 @@ function startStop(){
 		I("startStopBtn").className="running";
 		w.onmessage=function(e){
 			var data=JSON.parse(e.data);
-			var status=data.testStatus
+			var status=data.testState
 			if(status>=4){
 				//test completed
 				I("startStopBtn").className="";
