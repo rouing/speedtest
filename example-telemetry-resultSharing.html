@@ -180,8 +180,8 @@ function startStop(){
 		I("startStopBtn").className="running";
 		I("shareArea").style.display="none";
 		w.onmessage=function(e){
-			data=e.data.split(';');
-			var status=Number(data[0]);
+			data=JSON.parse(e.data);
+			var status=data.testStatus;
 			if(status>=4){
 				//test completed
 				I("startStopBtn").className="";
@@ -190,7 +190,7 @@ function startStop(){
 				if(status==4){
 					//if testId is present, show sharing panel, otherwise do nothing
 					try{
-						var testId=Number(data[9]);
+						var testId=Number(data.testId);
 						if(!isNaN(testId)){
 							var shareURL=window.location.href.substring(0,window.location.href.lastIndexOf("/"))+"/results/?id="+testId;
 							I("resultsImg").src=shareURL;
@@ -207,16 +207,16 @@ function startStop(){
 //this function reads the data sent back by the worker and updates the UI
 function updateUI(forced){
 	if(!forced&&(!data||!w)) return;
-	var status=Number(data[0]);
-	I("ip").textContent=data[4];
-	I("dlText").textContent=(status==1&&data[1]==0)?"...":data[1];
-	drawMeter(I("dlMeter"),mbpsToAmount(Number(data[1]*(status==1?oscillate():1))),meterBk,dlColor,Number(data[6]),progColor);
-	I("ulText").textContent=(status==3&&data[2]==0)?"...":data[2];
-	drawMeter(I("ulMeter"),mbpsToAmount(Number(data[2]*(status==3?oscillate():1))),meterBk,ulColor,Number(data[7]),progColor);
-	I("pingText").textContent=data[3];
-	drawMeter(I("pingMeter"),msToAmount(Number(data[3]*(status==2?oscillate():1))),meterBk,pingColor,Number(data[8]),progColor);
-	I("jitText").textContent=data[5];
-	drawMeter(I("jitMeter"),msToAmount(Number(data[5]*(status==2?oscillate():1))),meterBk,jitColor,Number(data[8]),progColor);
+	var status=data.testStatus;
+	I("ip").textContent=data.clientIp;
+	I("dlText").textContent=(status==1&&data.dlStatus==0)?"...":data.dlStatus;
+	drawMeter(I("dlMeter"),mbpsToAmount(Number(data.dlStatus*(status==1?oscillate():1))),meterBk,dlColor,Number(data.dlProgress),progColor);
+	I("ulText").textContent=(status==3&&data.ulStatus==0)?"...":data.ulStatus;
+	drawMeter(I("ulMeter"),mbpsToAmount(Number(data.ulStatus*(status==3?oscillate():1))),meterBk,ulColor,Number(data.ulProgress),progColor);
+	I("pingText").textContent=data.pingStatus;
+	drawMeter(I("pingMeter"),msToAmount(Number(data.pingStatus*(status==2?oscillate():1))),meterBk,pingColor,Number(data.pingProgress),progColor);
+	I("jitText").textContent=data.jitterStatus;
+	drawMeter(I("jitMeter"),msToAmount(Number(data.jitterStatus*(status==2?oscillate():1))),meterBk,jitColor,Number(data.pingProgress),progColor);
 }
 function oscillate(){
 	return 1+0.02*Math.sin(Date.now()/100);

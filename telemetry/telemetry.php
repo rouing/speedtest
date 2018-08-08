@@ -56,26 +56,5 @@ if($db_type=="mysql"){
 	echo "id ".$conn->lastInsertId();
     $conn = null;
 }
-elseif($db_type=="csv"){
-    // Prepare the csv formatted string
-    date_default_timezone_set($timezone);
-    $date = date('Y-m-d H:i:s');
-    $str = '"' . $date . '",';
-    $str .= '"' . $ip . '",';
-	$str .= '"' . $ispinfo . '",';
-    $str .= '"' . $ua . '",';
-    $str .= '"' . $dl . '",';
-    $str .= '"' . $ul . '",';
-    $str .= '"' . $ping . '",';
-    $str .= '"' . $jitter . '"' . "\n";
-
-    // Set header if this is a new file
-    if (!file_exists($Csv_File)) {
-        $header = '"date","ip","ispinfo","ua","download","upload","ping","jitter"' . "\n";
-        file_put_contents($Csv_File, $header, FILE_APPEND);
-    }
-
-    // Write line to file
-    file_put_contents($Csv_File, $str, FILE_APPEND);
-}
+else die("-1");
 ?>

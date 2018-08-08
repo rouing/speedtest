@@ -143,19 +143,19 @@ function startStop(){
 		w.postMessage('start'); //Add optional parameters as a JSON object to this command
 		I("startStopBtn").className="running";
 		w.onmessage=function(e){
-			var data=e.data.split(';');
-			var status=Number(data[0]);
+			var data=JSON.parse(e.data);
+			var status=data.testStatus;
 			if(status>=4){
 				//test completed
 				I("startStopBtn").className="";
 				w=null;
 			}
-			I("ip").textContent=data[4];
-			I("dlText").textContent=(status==1&&data[1]==0)?"...":data[1];
-			I("ulText").textContent=(status==3&&data[2]==0)?"...":data[2];
-			I("pingText").textContent=data[3];
-			I("jitText").textContent=data[5];
-			var prog=(Number(data[6])*2+Number(data[7])*2+Number(data[8]))/5;
+			I("ip").textContent=data.clientIp;
+			I("dlText").textContent=(status==1&&data.dlStatus==0)?"...":data.dlStatus;
+			I("ulText").textContent=(status==3&&data.ulStatus==0)?"...":data.ulStatus;
+			I("pingText").textContent=data.pingStatus;
+			I("jitText").textContent=data.jitterStatus;
+			var prog=(Number(data.dlProgress)*2+Number(data.ulProgress)*2+Number(data.pingProgress))/5;
 			I("progress").style.width=(100*prog)+"%";
 		};
 	}

@@ -200,8 +200,8 @@
             w = new Worker('speedtest_worker.min.js')
             var interval = setInterval(function () { w.postMessage('status') }, 100)
             w.onmessage = function (event) {
-                var data = event.data.split(';')
-                var status = Number(data[0])
+                var data = JSON.parse(event.data)
+                var status = data.testStatus
                 if (status >= 4) {
                     clearInterval(interval)
                     document.getElementById('abortBtn').style.display = 'none'
@@ -211,24 +211,24 @@
                 if (status === 5) {
                     document.getElementById('testArea').style.display = 'none'
                 }
-                if (status === 1 && Number(data[1]) > 0) {
-                    chart1.data.datasets[0].data[~~(20*Number(data[6]))]=(Number(data[1]))
+                if (status === 1 && Number(data.dlStatus) > 0) {
+                    chart1.data.datasets[0].data[~~(20*Number(data.dlProgress))]=(Number(data.dlStatus))
                     chart1.data.labels[chart1.data.datasets[0].data.length - 1] = ''
                     chart1.update()
                 }
-                if (status === 3 && Number(data[2]) > 0) {
-                    chart1.data.datasets[1].data[~~(20*Number(data[7]))]=(Number(data[2]))
+                if (status === 3 && Number(data.ulStatus) > 0) {
+                    chart1.data.datasets[1].data[~~(20*Number(data.ulProgress))]=(Number(data.ulStatus))
                     chart1.data.labels[chart1.data.datasets[1].data.length - 1] = ''
                     chart1.update()
                 }
-                if (status === 2 && Number(data[3]) > 0) {
-                    chart2.data.datasets[0].data.push(Number(data[3]))
-                    chart2.data.datasets[1].data.push(Number(data[5]))
+                if (status === 2 && Number(data.pingStatus) > 0) {
+                    chart2.data.datasets[0].data.push(Number(data.pingStatus))
+                    chart2.data.datasets[1].data.push(Number(data.jitterStatus))
                     chart2.data.labels[chart2.data.datasets[0].data.length - 1] = ''
                     chart2.data.labels[chart2.data.datasets[1].data.length - 1] = ''
                     chart2.update()
                 }
-                ip.textContent = data[4]
+                ip.textContent = data.clientIp
             }
             w.postMessage('start')
         }

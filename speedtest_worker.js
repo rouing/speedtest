@@ -1,5 +1,5 @@
 /*
-	HTML5 Speedtest v4.6
+	HTML5 Speedtest v4.6.1
 	by Federico Dossena
 	https://github.com/adolfintel/speedtest/
 	GNU LGPLv3 License
@@ -63,7 +63,7 @@ function url_sep (url) { return url.match(/\?/) ? '&' : '?'; }
 /*
 	listener for commands from main thread to this worker.
 	commands:
-	-status: returns the current status as a string of values spearated by a semicolon (;) in this order: testStatus;dlStatus;ulStatus;pingStatus;clientIp;jitterStatus;dlProgress;ulProgress;pingProgress
+	-status: returns the current status as a JSON string containing testStatus, dlStatus, ulStatus, pingStatus, clientIp, jitterStatus, dlProgress, ulProgress, pingProgress
 	-abort: aborts the current test
 	-start: starts the test. optionally, settings can be passed as JSON.
 		example: start {"time_ul":"10", "time_dl":"10", "count_ping":"50"}
@@ -71,7 +71,18 @@ function url_sep (url) { return url.match(/\?/) ? '&' : '?'; }
 this.addEventListener('message', function (e) {
   var params = e.data.split(' ')
   if (params[0] === 'status') { // return status
-    postMessage(testStatus + ';' + dlStatus + ';' + ulStatus + ';' + pingStatus + ';' + clientIp + ';' + jitterStatus + ';' + dlProgress + ';' + ulProgress + ';' + pingProgress+ ';' + testId)
+    postMessage(JSON.stringify({
+		testStatus:testStatus,
+		dlStatus:dlStatus,
+		ulStatus:ulStatus,
+		pingStatus:pingStatus,
+		clientIp:clientIp,
+		jitterStatus:jitterStatus,
+		dlProgress:dlProgress,
+		ulProgress:ulProgress,
+		pingProgress:pingProgress,
+		testId:testId
+	}))
   }
   if (params[0] === 'start' && testStatus === -1) { // start new test
     testStatus = 0

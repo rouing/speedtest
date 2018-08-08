@@ -1,6 +1,6 @@
 <?php
 
-$db_type="mysql"; //Type of db: "mysql", "sqlite", "postgresql" or "csv"
+$db_type="mysql"; //Type of db: "mysql", "sqlite" or "postgresql"
 $stats_password="PASSWORD"; //password to login to stats.php. Change this!!!
 
 // Sqlite3 settings
@@ -18,11 +18,6 @@ $PostgreSql_password="PASSWORD";
 $PostgreSql_hostname="DB_HOSTNAME";
 $PostgreSql_databasename="DB_NAME";
 
-// CSV settings
-$Csv_File="../../reports.csv";
-$timezone='UTC';
 
-
-
-//IMPORTANT: DO NOT ADD ANYTHING BELOW THIS PHP CLOSING TAGS, NOT EVEN EMPTY LINES!
+//IMPORTANT: DO NOT ADD ANYTHING BELOW THIS PHP CLOSING TAG, NOT EVEN EMPTY LINES!
 ?>

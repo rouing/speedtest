@@ -1,7 +1,7 @@
 # HTML5 Speedtest
 
 > by Federico Dossena  
-> Version 4.6, August 7, 2018
+> Version 4.6.1, August 8, 2018
 > [https://github.com/adolfintel/speedtest/](https://github.com/adolfintel/speedtest/)
 
 
@@ -107,18 +107,8 @@ we'll see the details of the format of the response.
 
 ```js
 w.onmessage = function (event) {
-  var data = event.data.split(';')
-  var testState = data[0]
-  var dlStatus = data[1]
-  var ulStatus = data[2]
-  var pingStatus = data[3]
-  var jitterStatus = data[5]
-  var clientIp = data[4]
-  var dlProgress = data[6]
-  var ulProgress = data[7]
-  var pingProgress = data[8]
-  var testId = data[9]
-  if (testState >= 4) {
+  var data = JSON.parse(event.data);
+  if (data.testState >= 4) {
     clearInterval(timer) // test is finished or aborted
   }
   // .. update your page here ..
@@ -126,12 +116,9 @@ w.onmessage = function (event) {
 ```
 
 #### Response format
-The response from the worker is composed of values separated by `;` (semicolon) in this
-format:
+The response from the worker is a JSON string containing these entries:
 
-`testState;dlStatus;ulStatus;pingStatus;clientIp;jitterStatus;dlProgress;ulProgress;pingProgress`
-
-* __testState__ is an integer between -1 and 5
+* __testState__: an integer between -1 and 5
     * `-1` = Test not started yet
     * `0` = Test starting
     * `1` = Download test in progress
@@ -139,22 +126,22 @@ format:
     * `3` = Upload test in progress
     * `4` = Test finished
     * `5` = Test aborted
-* __dlStatus__ is either
+* __dlStatus__: either
     * Empty string (not started or aborted)
     * Download speed in Megabit/s as a number with 2 decimals
     * The string "Fail" (test failed)
-* __ulStatus__ is either
+* __ulStatus__: either
     * Empty string (not started or aborted)
     * Upload speed in Megabit/s as a number with 2 decimals
     * The string "Fail" (test failed)
-* __pingStatus__ is either
+* __pingStatus__: either
     * Empty string (not started or aborted)
     * Estimated ping in milliseconds as a number with 2 decimals
     * The string "Fail" (test failed)
-* __clientIp__ is either
+* __clientIp__: either
     * Empty string (not fetched yet or failed)
-    * The client's IP address as a string
-* __jitterStatus__ is either
+    * The client's IP address as a string (with ISP info if enabled)
+* __jitterStatus__: either
     * Empty string (not started or aborted)
     * Estimated jitter in milliseconds as a number with 2 decimals (lower = stable connection)
     * The string "Fail" (test failed)
@@ -278,7 +265,11 @@ w.postMessage('start '+JSON.stringify(params))
     * `1514 / 1460`: TCP+IPv4+ETH, ignoring HTTP overhead
     * `1514 / 1440`: TCP+IPv6+ETH, ignoring HTTP overhead
     * `1`: ignore overheads. This measures the speed at which you actually download and upload files rather than the raw connection speed
-* __telemetry_extra__: Extra data that you want to be passed to the telemetry. This is a string field, if you want to pass an object, make sure you use ``JSON.stringify``.
+* __telemetry_level__: The type of telemetry to use. See the telemetry section for more info about this
+	* Default: `none`
+	* `basic`: send results only
+	* `full`: send results and debug info
+* __telemetry_extra__: Extra data that you want to be passed to the telemetry. This is a string field, if you want to pass an object, make sure you use ``JSON.stringify``. This string will be added to the database entry for this test.
 	
 ### Aborting the test prematurely
 The test can be aborted at any time by sending an abort command to the worker:
@@ -327,10 +318,10 @@ You need to start the test with your replacements like this:
 w.postMessage('start {"url_dl": "newGarbageURL", "url_ul": "newEmptyURL", "url_ping": "newEmptyURL", "url_getIp": "newIpURL"}')
 ```
 ## Telemetry
-Telemetry currently requires PHP and either MySQL, PostgreSQL or SQLite. Alternatively, it is possible to save to a CSV file.
+Telemetry currently requires PHP and either MySQL, PostgreSQL or SQLite.
 To set up the telemetry, we need to do 4 things:
 * copy the `telemetry` folder
-* edit `telemetry_settings.php` to add your database or CSV settings
+* edit `telemetry_settings.php` to add your database settings
 * create the database
 * enable telemetry
 
@@ -341,7 +332,7 @@ If you see a table called `speedtest_users`, empty, you did it right.
 
 ### Configuring `telemetry.php`
 Open `telemetry_settings.php` with notepad or a similar text editor.
-Set your preferred database, ``$db_type="mysql";``, ``$db_type="sqlite";``, ``$db_type="postgresql";`` or ``$db_type="csv";``
+Set your preferred database, ``$db_type="mysql";``, ``$db_type="sqlite";`` or ``$db_type="postgresql";``
 If you choose to use Sqlite3, you must set the path to your database file:
 ```php
 $Sqlite_db_file = "../telemetry.sql";
@@ -363,26 +354,19 @@ $PostgreSql_hostname="DB_HOSTNAME"; //database address, usually localhost
 $PostgreSql_databasename="DB_NAME"; //the name of the database where you loaded telemetry_postgresql.sql
 ```
 
-If you choose to use a CSV file, you must set the Csv_File and timezone variables.
-```php
-$Csv_File="myReportFile.csv";
-$timezone='Europe/Paris';
-```
-__Note__: CSV currently only supports basic telemetry, the log will not be saved
-
 ### Enabling telemetry
 Edit your test page; where you start the worker, you need to specify the `telemetry_level`.  
 There are 3 levels:
 * `none`: telemetry is disabled (default)
 * `basic`: telemetry collects IP, ISP info, User Agent, Preferred language, Test results
-* `full`: same as above, but also collects a log (10-150 Kb each, not recommended)
+* `full`: same as above, but also collects a debug log (10-150 Kb each, not recommended unless you're developing the speedtest)
 
 Example:
 ```js
 w.postMessage('start {"telemetry_level":"basic"}')
 ```
 
-Also, see example-telemetry.html
+You can use example-telemetryEnabled.html and example-telemetry-resultSharing.html as starting points.
 
 ### Results sharing
 This feature generates an image that can be share by the user containing the download, upload, ping, jitter and ISP (if enabled).
@@ -391,16 +375,12 @@ To use this feature, copy the `results` folder. You can customize the style of t
 
 This feature requires Telemetry to be enabled, and FreeType2 must be installed in PHP (if not already be installed by your distro).
 
-__Note:__ CSV doesn't currently support this.
-
 __Important:__ This feature relies on PHP functions `imagefttext` and `imageftbbox` that are well known for being problematic. The most common problem is that they can't find the font files and therefore nothing is drawn. This problem is metioned [here](http://php.net/manual/en/function.imagefttext.php) and was experienced by a lot of users.
 
 ### Seeing the results
 A basic front-end for visualizing and searching tests by ID is available in `telemetry/stats.php`.
 
 A login is required to access the interface. __Important__: change the default password in `telemetry_settings.php`.
-
-__Note:__ CSV doesn't currently support this.
 
 ## Troubleshooting
 These are the most common issues reported by users, and how to fix them. If you still need help, contact me at [info@fdossena.com](mailto:info@fdossena.com).
