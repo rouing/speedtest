@@ -39,6 +39,9 @@ Also, here's an [example config on Ubuntu 16 LTS](https://github.com/adolfintel/
 * [Read the wiki](https://github.com/adolfintel/speedtest/wiki)
 * Read doc.md
 
+## Multiple test servers
+Please see the ```mpot``` branch
+
 ## Docker
 Please see the ```docker``` branch
 

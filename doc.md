@@ -150,8 +150,6 @@ The response from the worker is a JSON string containing these entries:
 * __pingProgress__: the progress of the ping+jitter test as a number between 0 and 1
 * __testId__: when telemetry is active, this is the ID of the test as an integer. This string is 'noID' until the test is finished (testState 4). This ID is used for results sharing
 
-Note: clientIp appears before jitterStatus. This is not a mistake, it's to keep the js file compatible with older pages from before the jitter test was introduced.
-
 ### Starting the test
 To start the test with the default settings, which is usually the best choice, send the start command to the worker:
 
