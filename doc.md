@@ -331,10 +331,12 @@ If you see a table called `speedtest_users`, empty, you did it right.
 ### Configuring `telemetry.php`
 Open `telemetry_settings.php` with notepad or a similar text editor.
 Set your preferred database, ``$db_type="mysql";``, ``$db_type="sqlite";`` or ``$db_type="postgresql";``
+
 If you choose to use Sqlite3, you must set the path to your database file:
 ```php
-$Sqlite_db_file = "../telemetry.sql";
+$Sqlite_db_file = "../../telemetry.sql";
 ```
+Sqlite doesn't require any additional configuration.
 
 If you choose to use MySQL, you must also add your database credentials:
 ```php
