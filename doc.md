@@ -1,7 +1,7 @@
 # HTML5 Speedtest
 
 > by Federico Dossena  
-> Version 4.6.1, August 8, 2018
+> Version 4.6.2, September 21, 2018
 > [https://github.com/adolfintel/speedtest/](https://github.com/adolfintel/speedtest/)
 
 
@@ -180,8 +180,8 @@ w.postMessage('start '+JSON.stringify(params))
     * Default: `15`
     * Recommended: `>=10`
 * __count_ping__: How many pings to perform in the ping test
-    * Default: `35`
-    * Recommended: `>=20`
+    * Default: `10`
+    * Recommended: `>=3, <30`
 * __url_dl__: path to garbage.php or a large file to use for the download test.
     * Default: `garbage.php`
     * __Important:__ path is relative to js file
