@@ -1,3 +1,5 @@
+![HTML5 Speedtest Logo](https://github.com/adolfintel/speedtest/blob/master/.logo/Readme-Logo.png?raw=true)
+
 # HTML5 Speedtest
 
 No Flash, No Java, No Websocket, No Bullshit.
