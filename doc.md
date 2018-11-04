@@ -410,6 +410,10 @@ Example: ```$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];```
 If the image doesn't display and the browser displays a broken image icon, FreeType2 is not installed or configured properly.  
 If the image is blank, this usually happens because PHP can't find the font files inside the `results` folder. You can fix your PHP config or edit `results/index.php` and use absolute paths for the fonts. This is a [known issue with PHP](http://php.net/manual/en/function.imagefttext.php) and no real solution is known.
 
+#### My server is behind Cloudflare and I can't reach full speed on some of the tests
+This is not a speedtest related issue, as it can be replicated in virtually any HTTP file upload/download.  
+Go to your domain's DNS settings and change "DNS and HTTP proxy (CDN)" to "DNS only", and wait for the settings to be applied (can take a few minutes).
+
 ## Known bugs and limitations
 ### General
 * The ping/jitter test is measured by seeing how long it takes for an empty XHR to complete. It is not an acutal ICMP ping. Different browsers may also show different results, especially on very fast connections on slow devices.
