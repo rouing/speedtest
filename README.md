@@ -61,31 +61,3 @@ $ docker build -t adolfintel/speedtest:latest .
 
 $ docker run -d --name  speedtest -p 0.0.0.0:80:80 adolfintel/speedtest:latest
 ```
-
-## Multiple test servers
-Please see the ```mpot``` branch
-
-## Node.js backend
-A Node.js implementation is available in the ```node``` branch, maintained by [dunklesToast](https://github.com/dunklesToast).
-
-## Donate
-[![Donate with Liberapay](https://liberapay.com/assets/widgets/donate.svg)](https://liberapay.com/fdossena/donate)  
-[Donate with PayPal](https://www.paypal.me/sineisochronic)  
-Send ETH at this address: ```0x8A5273d4e2618c4cff2C62d8EB731701FceEd8E3```
-
-## License
-Copyright (C) 2016-2018 Federico Dossena
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Lesser General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with this program.  If not, see <https://www.gnu.org/licenses/lgpl>.
-
