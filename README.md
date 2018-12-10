@@ -41,11 +41,29 @@ Also, here's an [example config on Ubuntu 16 LTS](https://github.com/adolfintel/
 * [Read the wiki](https://github.com/adolfintel/speedtest/wiki)
 * Read doc.md
 
+## Docker + Docker Compose
+
+The project includes a basic `docker-compose.yml` for development.  To run, execute the following:
+
+```
+$ docker-compose build
+
+$ docker-compose up
+```
+
+
+Speedtest will be available at [http://0.0.0.0:8888/](http://0.0.0.0:8888/).  You can try out all of the examples via their associated urls (i.e. `http://0.0.0.0:8888/example1.html`).
+
+To run via Docker directly:
+
+```
+$ docker build -t adolfintel/speedtest:latest .
+
+$ docker run -d --name  speedtest -p 0.0.0.0:80:80 adolfintel/speedtest:latest
+```
+
 ## Multiple test servers
 Please see the ```mpot``` branch
-
-## Docker
-Please see the ```docker``` branch
 
 ## Node.js backend
 A Node.js implementation is available in the ```node``` branch, maintained by [dunklesToast](https://github.com/dunklesToast).
@@ -70,3 +88,4 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/lgpl>.
+
